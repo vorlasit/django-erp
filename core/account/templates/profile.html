@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h3>User Profiles</h3>
+    <div class="row"> 
+        <div class="col-md-4">
+            <div class="card mb-4">
+            <div class="card-body">
+                {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" alt="Avatar" class="rounded-circle me-2 border" width="50%"  style="object-fit: cover;" />
+                  {% endif %}
+                <h5 class="card-title">{{ user.username }}</h5>
+                <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>
+                <p class="card-text"><strong>First Name:</strong> {{ user.phone }}</p>
+                <p class="card-text"><strong>Last Name:</strong> {{ user.last_name }}</p>
+            </div>
+            </div>
+        </div> 
+    </div>
+</div>
+{% endblock %}

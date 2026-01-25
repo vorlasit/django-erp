@@ -1,0 +1,39 @@
+# Core
+Django==4.2.9
+python-dotenv==1.0.0
+
+# Database
+psycopg2-binary==2.9.9
+
+# Auth & Security
+django-allauth==0.61.1
+django-cors-headers==4.3.1
+django-guardian==2.4.0
+
+# API (Optional but enterprise-ready)
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.3.1
+
+# Admin / UI helpers
+django-filter==23.5
+django-crispy-forms==2.1
+crispy-bootstrap5==2023.10
+
+# Utilities
+Pillow==10.2.0
+python-dateutil==2.8.2
+pytz==2024.1
+
+# Dev & Debug
+django-debug-toolbar==4.2.0
+
+# Excel / Report (like Odoo XLSX)
+openpyxl==3.1.2
+xlsxwriter==3.1.9
+
+# Background jobs (like Odoo cron)
+celery==5.3.6
+redis==5.0.1
+
+# Logging
+loguru==0.7.2

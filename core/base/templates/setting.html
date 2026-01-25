@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Setting{% endblock %}
+{% block content %}
+{% load static %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="text-center mb-3">
+        {{ form.name.label_tag }}
+        {{ form.name }}
+        {% if form.name.errors %}
+        <div class="text-danger small">
+            {{ form.name.errors|striptags }}
+        </div>
+        {% endif %}
+    </div>
+    <!-- Favicon -->
+    <div class="file-input-container text-center mb-3" data-default-image="{% static 'img/avatar.png' %}">
+        <img src="{% if form.instance.favicon %}{{ form.instance.favicon.url }}{% else %}{% static 'img/avatar.png' %}{% endif %}"
+            class="file-preview border" width="150" height="150" style="border-radius: 50%; object-fit: cover;">
+        <input type="file" name="favicon" class="file-input d-none" accept="image/*">
+        <input type="hidden" name="remove_favicon" class="file-remove-flag">
+        <div class="file-actions mt-2">
+            <button type="button" class="btn btn-sm btn-outline-primary btn-file-change">Change</button>
+            <button type="button" class="btn btn-sm btn-outline-danger btn-file-remove">Remove</button>
+        </div>
+    </div>
+
+    <!-- App Icon -->
+    <div class="file-input-container text-center mb-3" data-default-image="{% static 'img/avatar.png' %}">
+        <img src="{% if form.instance.app_icon %}{{ form.instance.app_icon.url }}{% else %}{% static 'img/avatar.png' %}{% endif %}"
+            class="file-preview border" width="150" height="150" style="border-radius: 50%; object-fit: cover;">
+        <input type="file" name="app_icon" class="file-input d-none" accept="image/*">
+        <input type="hidden" name="remove_app_icon" class="file-remove-flag">
+        <div class="file-actions mt-2">
+            <button type="button" class="btn btn-sm btn-outline-primary btn-file-change">Change</button>
+            <button type="button" class="btn btn-sm btn-outline-danger btn-file-remove">Remove</button>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Loop ทุก container ของไฟล์
+        document.querySelectorAll(".file-input-container").forEach(container => {
+            const input = container.querySelector(".file-input");
+            const preview = container.querySelector(".file-preview");
+            const removeFlag = container.querySelector(".file-remove-flag");
+            const btnChange = container.querySelector(".btn-file-change");
+            const btnRemove = container.querySelector(".btn-file-remove");
+            const defaultImage = container.dataset.defaultImage;
+            // Change
+            if (btnChange && input) {
+                btnChange.addEventListener("click", () => input.click());
+            }
+            // Preview
+            if (input) {
+                input.addEventListener("change", (e) => {
+                    const file = e.target.files[0];
+                    if (file && preview) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => preview.src = event.target.result;
+                        reader.readAsDataURL(file);
+                        if (removeFlag) removeFlag.value = "";
+                    }
+                });
+            }
+            // Remove
+            if (btnRemove) {
+                btnRemove.addEventListener("click", () => {
+                    if (preview) preview.src = defaultImage;
+                    if (removeFlag) removeFlag.value = "1";
+                    if (input) input.value = "";
+                });
+            }
+        });
+    });
+</script>
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}
+Register
+{% endblock %}
+{% block content %}
+{% load static %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="">
+      <div class=" p-4">
+        <h3 class="card-title text-center mb-3">Register</h3>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <!-- Avatar Upload -->
+          <div class="text-center mb-3">
+            <img src="{% if form.instance.avatar %}
+                  {{ form.instance.avatar.url }}
+                {% else %}
+                  {% static 'img/avatar.png' %}
+                {% endif %}" class="avatar-preview border" width="150" height="150"
+              style="border-radius: 50%; object-fit: cover;" />
+            <input type="file" name="avatar" class="avatar-input d-none" accept="image/*" />
+            <input type="hidden" name="remove_avatar" class="avatar-remove-flag" />
+            <div class="avatar-actions mt-2">
+              <button type="button" class="btn btn-sm btn-outline-primary btn-avatar-change">Change</button>
+              <button type="button" class="btn btn-sm btn-outline-danger btn-avatar-remove">Remove</button>
+            </div>
+          </div>
+          {% for field in form %}
+          {% if field.name != 'avatar' %}
+          <div class="mb-3">
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.errors %}
+            <div class="text-danger small">{{ field.errors|striptags }}</div>
+            {% endif %}
+          </div>
+          {% endif %}
+          {% endfor %}
+          <div class="container mt-5">
+            <h3>Permissions by Model</h3>
+            <div class="row mb-4">
+              {% for key, data in form.permissions_by_ct.items %}
+              <div style="margin-bottom:15px;" class="col-md-4">
+                <strong>{{ data.ct.app_label }} → {{ data.ct.model|title }}</strong>
+                <ul>
+                  {% for perm in data.permissions %}
+                  <li>
+                    <label>
+                      <input type="checkbox" name="permissions" value="{{ perm.id }}">
+                      {{ perm.name }}
+                    </label>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+        </form>
+        <div class="mt-3 text-center">
+          <p>
+            Already have an account? <a href="{% url 'login' %}">Login</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
