@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Setting{% endblock %}
+{% block menu_header %}
+{% include 'menu.html' %}
+{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Card style */
+    .row{
+        box-shadow:  0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+            <div class="col-sm-4">
+                <button type="submit" class="btn btn-primary mt-4">
+                    Change Settings
+                </button>
+            </div> 
+    <div class="row bg-light mt-3">
+        <div class="col-sm-4">
+                
+            <div class="justify-content-center mb-3 text-center">
+                {{ form.name.label_tag }}
+                {{ form.name }}
+                {% if form.name.errors %}
+                <div class="text-danger small">
+                    {{ form.name.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-sm-4 text-center">
+
+            <!-- Favicon -->
+            <div class="file-input-container text-center mb-3" data-default-image="{% static 'img/avatar.png' %}">
+                <label>{{ form.favicon.label }}</label><br>
+
+                <img src="{% if form.instance.favicon %}{{ form.instance.favicon.url }}{% else %}{% static 'img/avatar.png' %}{% endif %}"
+                    class="file-preview border" width="150" height="150" style="border-radius: 50%; object-fit: cover;">
+
+                <input type="file" name="favicon" class="file-input d-none" accept="image/*">
+                <input type="hidden" name="remove_favicon" class="file-remove-flag">
+
+                <div class="file-actions mt-2">
+                    <button type="button" class="btn btn-sm btn-outline-primary btn-file-change">
+                        Change
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-danger btn-file-remove">
+                        Remove
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm-4 text-center">
+            <!-- App Icon -->
+            <div class="file-input-container text-center mb-3" data-default-image="{% static 'img/avatar.png' %}">
+                <label>{{ form.app_icon.label }}</label><br>
+
+                <img src="{% if form.instance.app_icon %}{{ form.instance.app_icon.url }}{% else %}{% static 'img/avatar.png' %}{% endif %}"
+                    class="file-preview border" width="150" height="150" style="border-radius: 50%; object-fit: cover;">
+
+                <input type="file" name="app_icon" class="file-input d-none" accept="image/*">
+                <input type="hidden" name="remove_app_icon" class="file-remove-flag">
+
+                <div class="file-actions mt-2">
+                    <button type="button" class="btn btn-sm btn-outline-primary btn-file-change">
+                        Change
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-danger btn-file-remove">
+                        Remove
+                    </button>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".file-input-container").forEach(container => {
+            const input = container.querySelector(".file-input");
+            const preview = container.querySelector(".file-preview");
+            const removeFlag = container.querySelector(".file-remove-flag");
+            const btnChange = container.querySelector(".btn-file-change");
+            const btnRemove = container.querySelector(".btn-file-remove");
+            const defaultImage = container.dataset.defaultImage;
+
+            btnChange?.addEventListener("click", () => input.click());
+
+            input?.addEventListener("change", (e) => {
+                const file = e.target.files[0];
+                if (file && preview) {
+                    const reader = new FileReader();
+                    reader.onload = e => preview.src = e.target.result;
+                    reader.readAsDataURL(file);
+                    if (removeFlag) removeFlag.value = "";
+                }
+            });
+
+            btnRemove?.addEventListener("click", () => {
+                if (preview) preview.src = defaultImage;
+                if (removeFlag) removeFlag.value = "1";
+                if (input) input.value = "";
+            });
+        });
+    });
+</script>
+{% endblock %}

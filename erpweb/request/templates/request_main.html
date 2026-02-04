@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}Group List{% endblock %}
+
+{% block menu_header %}
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'request_main' %}">Requests</a>
+</li>
+{% endblock %}
+{% load static %}
+{% load user_tags %}
+{% block content %}
+
+<style>
+    
+    .container {
+      padding-left: 12px;
+      padding-right: 12px;
+    } 
+    .row {
+      margin-left: 0;
+      margin-right: 0;
+    } 
+    .menu-link {
+      text-decoration: none;
+      color: #fff;
+    } 
+    .menu-card {
+      border: 0;
+      background: transparent;
+      /* ❗ ไม่มี bg */
+      padding: 10px;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+      border-radius: 12px;
+    }
+
+    .menu-card img {
+      width: 72px;
+      height: 72px;
+      margin-bottom: 12px;
+    }
+
+    .menu-card h5 {
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .menu-card:hover h5 {
+      color: #ffe4ff;
+    }
+</style>
+
+<div class="row text-center pt-5 g-3
+            row-cols-2 row-cols-md-4 row-cols-lg-5">
+    {% for req in req_type %}
+      <div class="col p-3"> 
+        <a href="{% url 'request_list' req.type %}" class="menu-link">
+          <div class="menu-card">
+            <img src="{% static req.icon %}">
+            <h5 class="text-black">{{ req.name }}</h5>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+
+    {% if user|has_group:'Administrator' %}
+    <div class="col p-3">
+        <a href="{% url 'request_list_all' 0 %}" class="menu-link">
+            <div class="menu-card">
+                <img src="{% static 'icon/request.png' %}">
+                <h5 style="color: black;">All Requests</h5>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

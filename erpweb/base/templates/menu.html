@@ -1,0 +1,15 @@
+
+<li class="nav-item">
+
+    <a href="{% url 'settings' %}" data-bs-toggle="tooltip" title="Go to Icon Settings" class="nav-link">
+      App Settings
+    </a>  
+  </li>
+<li class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">User and Groups</a>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="{% url 'user_list' %}">Users</a></li>
+    <li><a class="dropdown-item" href="{% url 'group_list' %}">Groups</a></li>
+    <li><a class="dropdown-item" href="{% url 'department_list' %}">Departments</a></li>
+  </ul>
+</li>

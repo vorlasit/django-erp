@@ -1,0 +1,19 @@
+
+{% load static %}
+{% load user_tags %}
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'request_list' 'helpdesk' %}">Helpdesk</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'request_list' 'equipment' %}">Equipment</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'request_list' 'device' %}">Device</a>
+</li>
+
+
+{% if user|has_group:'Administrator' %}
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'request_main' %}">Requests</a>
+</li>
+{% endif %}

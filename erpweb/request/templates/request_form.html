@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Group List{% endblock %}
+
+
+{% block menu_header %}
+{% include 'menu_request.html' %}
+{% endblock %} 
+{% block content %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const department = document.getElementById('id_department');
+    const requestTo  = document.getElementById('id_request_to');
+    department.addEventListener('change', function () {
+        let deptId = this.value;
+        fetch(`/requests/ajax/users-by-department/?department=${deptId}`)
+            .then(res => res.json())
+            .then(data => { 
+                requestTo.innerHTML = ''; // ล้างของเก่า 
+                let empty = new Option('---------', '');
+                requestTo.appendChild(empty); 
+                data.forEach(user => {
+                    let option = new Option(user.username, user.id);
+                    requestTo.appendChild(option);
+                });
+            });
+    });
+});
+</script>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="header">
+        <h5 class="modal-title">Requirement</h5>
+    </div>
+    <div class="col-md-12">
+        <div class="mb-3">
+            {{ form.as_p }}
+        </div>
+    </div>
+    <div class="footer"> 
+        <button class="btn btn-primary">Create</button> 
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+{% load user_tags %}
+{% load django_bootstrap5 %}
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>
+    Main Menu
+  </title>
+  {% if app_settings.favicon %}
+  <link rel="icon" type="image/png" href="{{ app_settings.favicon.url }}" />
+  {% else %}
+  <link rel="icon" type="image/png" href="{% static 'img/avatar.png' %}" />
+  {% endif %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+  <script src="{% static 'js/script.js' %}"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    } 
+    body {
+      min-height: calc(var(--vh, 1vh) * 100);
+      background: linear-gradient(to bottom left, rgb(40, 115, 255), rgb(246, 255, 122));
+      display: flex;
+      justify-content: center;
+    } 
+    .container {
+      padding-left: 12px;
+      padding-right: 12px;
+    } 
+    .row {
+      margin-left: 0;
+      margin-right: 0;
+    } 
+    .menu-link {
+      text-decoration: none;
+      color: #fff;
+    } 
+    .menu-card {
+      border: 0;
+      background: transparent;
+      /* ❗ ไม่มี bg */
+      padding: 10px;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+      border-radius: 12px;
+    }
+
+    .menu-card img {
+      width: 72px;
+      height: 72px;
+      margin-bottom: 12px;
+    }
+
+    .menu-card h5 {
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .menu-card:hover h5 {
+      color: #ffe4ff;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="container">
+    <div class="row text-center pt-5 g-3
+            row-cols-2 row-cols-md-4 row-cols-lg-5"> 
+        <a href="{% url 'dashboard' %}" class="menu-link">
+          <div class="col menu-card">
+            <img src="{% static 'icon/dashboard.png' %}">
+            <h5>Dashboard</h5>
+          </div>
+        </a>  
+        <a href="{% url 'request_main' %}" class="menu-link">
+          <div class="col menu-card">
+            <img src="{% static 'icon/request.png' %}">
+            <h5>Requirement</h5>
+          </div>
+        </a> 
+
+      {% if user|has_group:'Administrator' %} 
+        <a href="{% url 'settings' %}" class="menu-link">
+          <div class="col menu-card">
+            <img src="{% static 'icon/setting.png' %}">
+            <h5>Settings</h5>
+          </div>
+        </a> 
+      {% endif %}
+    </div>
+  </div>
+
+
+</body>
+
+</html>

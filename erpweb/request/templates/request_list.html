@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Group List{% endblock %}
+
+{% block menu_header %}
+{% include 'menu_request.html' %}
+{% endblock %}
+{% block content %}
+<h2>Requirement {{ req_type }}</h2>
+<!-- Add Requirement Button -->
+<a href="{% url 'request_create' req_type %}" class="btn btn-primary mb-3">
+    Add Requirement
+</a>
+<table class="table">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Requester</th>
+            <th>To Department</th>
+            <th>Request to</th>
+            <th>Created At</th>
+            <th>State</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for request in requests %}
+        <tr>
+            <td>{{ request.id }}</td>
+            <td>{{ request.title }}</td>
+            <td>
+                {% if request.type == 'helpdesk' %}
+                <span class="badge bg-primary">{{ request.type }}</span>
+                {% elif request.type == 'equipment' %}
+                <span class="badge bg-success">{{ request.type }}</span>
+                {% elif request.type == 'device' %}
+                <span class="badge bg-info">{{ request.type }}</span>
+                {% else %}
+                <span class="badge bg-secondary">{{ request.type }}</span>
+                {% endif %}
+
+            </td>
+            <td>{{ request.requester }}</td>
+            <td>{{ request.department }}</td>
+            <td>{{ request.request_to }}</td>
+            <td>{{ request.created_at|date:"d-m-Y H:i" }}</td>
+            <td>
+                {% if request.state == 'pending' %}
+                <span class="badge bg-warning">{{ request.state }}</span>
+                {% elif request.state == 'in_progress' %}
+                <span class="badge bg-info">{{ request.state }}</span>
+                {% elif request.state == 'completed' %}
+                <span class="badge bg-success">{{ request.state }}</span>
+                {% elif request.state == 'rejected' %}
+                <span class="badge bg-danger">{{ request.state }}</span>
+                {% else %}
+                <span class="badge bg-secondary">{{ request.state }}</span>
+                {% endif %}
+            <td>
+                <a href="{% url 'request_edit' request.id %}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{% url 'request_delete' request.id %}" class="btn btn-sm btn-danger btn-delete"
+                    data-name="{{ request.title }}">
+                    Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

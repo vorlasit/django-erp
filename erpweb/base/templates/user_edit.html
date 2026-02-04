@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}
+Edit Profile
+{% endblock %}
+{% block content %}
+{% load static %}
+{% load user_tags %}
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="">
+      <div class="p-4">
+        <h4 class="card-title text-center mb-3">Edit Profile</h4>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="text-center mb-3">
+            <img src="{% if form.instance.avatar %}
+                  {{ form.instance.avatar.url }}
+                {% else %}
+                  {% static 'img/avatar.png' %}
+                {% endif %}" class="avatar-preview border" width="150" height="150"
+              style="border-radius: 50%; object-fit: cover;" />
+            <input type="file" name="avatar" class="avatar-input d-none" accept="image/*" />
+            <input type="hidden" name="remove_avatar" class="avatar-remove-flag" />
+            <div class="avatar-actions mt-2">
+              <button type="button" class="btn btn-sm btn-outline-primary btn-avatar-change">Change</button>
+              <button type="button" class="btn btn-sm btn-outline-danger btn-avatar-remove">Remove</button>
+            </div>
+          </div>
+          {% for field in form %} 
+          <!-- 👈 Skip avatar field -->
+          <div class="mb-3">
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.errors %}
+            <div class="text-danger small">{{ field.errors|striptags }}</div>
+            {% endif %}
+          </div> 
+          {% endfor %} 
+          <button type="submit" class="btn btn-success w-100">Save Changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

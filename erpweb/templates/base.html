@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+{% load user_tags %}
+{% load django_bootstrap5 %}
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>
+    {% block title %}
+    My ERP
+    {% endblock %}
+  </title>
+  <!-- Font Awesome 6 CDN -->
+  {% if app_settings.favicon %}
+  <link rel="icon" type="image/png" href="{{ app_settings.favicon.url }}" />
+  {% else %}
+  <link rel="icon" type="image/png" href="{% static 'img/avatar.png' %}" />
+  {% endif %}
+
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+  <script src="{% static 'js/script.js' %}"></script>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    .electric-switch {
+      width: 60px;
+      height: 90px;
+      background: #e0e0e0;
+      border-radius: 10px;
+      position: relative;
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, .3);
+    }
+
+    .electric-switch input {
+      display: none;
+    }
+
+    .switch-btn {
+      position: absolute;
+      width: 100%;
+      height: 50%;
+      left: 0;
+      background: #f5f5f5;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .switch-up {
+      top: 0;
+      border-bottom: 1px solid #bbb;
+    }
+
+    .switch-down {
+      bottom: 0;
+      border-top: 1px solid #bbb;
+    }
+
+    /* ON state */
+    input:checked+.switch-up {
+      background: #4caf50;
+      color: #fff;
+      box-shadow: inset 0 -3px 5px rgba(0, 0, 0, .3);
+    }
+
+    /* OFF state */
+    input:not(:checked)~.switch-down {
+      background: #f44336;
+      color: #fff;
+      box-shadow: inset 0 3px 5px rgba(0, 0, 0, .3);
+    }
+
+    /* end switch */
+
+
+    body {
+      background-color: #f8f9fa;
+    }
+
+    .card {
+      border-radius: 1rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-control:focus {
+      box-shadow: none;
+      border-color: #4e73df;
+    }
+
+    .btn-primary {
+      background-color: #4e73df;
+      border-color: #4e73df;
+    }
+
+    .btn-primary:hover {
+      background-color: #2e59d9;
+      border-color: #2653d4;
+    }
+    .container {
+        padding: 20px;
+        margin: 20px auto;
+        height: 85vh;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+ 
+  </style>
+</head>
+
+<body>
+  {% if user.is_authenticated %}
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{% url 'main_menu' %}">
+        <i class="fa fa-th-large" style="font-size:24px;color:white"></i>
+      </a>
+      <a class="navbar-brand" href="{% url 'dashboard' %}">
+        {% if app_settings.app_icon %}
+        <img src="{{ app_settings.app_icon.url }}" alt="title image" height="40" />
+        {% else %}
+        <img src="{% static 'img/avatar.png' %}" alt="title image" height="40" />
+        {% endif %}
+
+        {% if app_settings.name %}
+        <span>{{ app_settings.name }}</span>
+        {% endif %}
+      </a>
+      <!-- Hamburger (mobile) -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span
+          class="navbar-toggler-icon"></span></button>
+
+      <!-- Navbar links -->
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <!-- <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard' %}">Home</a> 
+          </li> -->
+
+          {% block menu_header %}
+
+          {% endblock %}
+
+        </ul>
+
+        <!-- Right aligned items -->
+        <ul class="navbar-nav ms-auto">
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              <!-- Avatar (circle) -->
+              {% if user.avatar %}
+              <img src="{{ user.avatar.url }}" alt="Avatar" class="rounded-circle me-2 border" width="32" height="32"
+                style="object-fit: cover;" />
+              {% else %}
+              <div
+                class="rounded-circle bg-secondary text-white d-inline-flex align-items-center justify-content-center me-2 border"
+                style="width: 32px; height: 32px; font-size: 16px; font-weight: bold;">
+                {{ user.username|slice:':1'|upper }}
+              </div>
+              {% endif %}
+
+              <span>{{ user.username }}</span>
+            </a>
+            <ul class="dropdown-menu dropdown-start" aria-labelledby="navbarDropdown">
+              <li>
+                <a class="dropdown-item" href="{% url 'profile' %}">{{ user.username }}</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  {% endif %}
+  <div class="container">
+    {% block content %}
+
+    {% endblock %}
+  </div>
+  <!-- Bootstrap 5 JS -->
+
+</body>
+
+</html>

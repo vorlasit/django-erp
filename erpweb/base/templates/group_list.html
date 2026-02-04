@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block title %}Group List{% endblock %}
+
+{% block menu_header %}
+{% include 'menu.html' %}
+{% endblock %}
+
+{% block content %}
+<script>
+    $(document).ready(function () {
+        $('.select2').select2({
+            width: '100%',
+            placeholder: 'Select Permissions'
+        });
+    });
+</script>
+<h2>Group List</h2>
+<!-- Add Group Button -->
+<button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#groupModal">
+    + Add Group
+</button>
+
+<!-- Add Modal -->
+<div class="modal fade" id="groupModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{% url 'group_create' %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Group</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        {{ create_form.name.label_tag }}
+                        {{ create_form.name }}
+                    </div>
+                    <h5>Permissions</h5>
+                    <div class="row">
+                        {% for ct_key, perms in create_form.permissions_by_content_type.items %}
+                        <div class="col-md-6 mb-3">
+                            <strong>{{ perms.0.content_type.app_label }} | {{ perms.0.content_type.model }}</strong>
+                            <div class="ms-2">
+                                {% for perm in perms %}
+                                <div class="form-check">
+                                    <input type="checkbox" name="permissions" value="{{ perm.id }}" class="form-check-input"
+                                        id="perm{{ perm.id }}" {% if perm in create_form.instance.permissions.all %}checked{% endif %}>
+                                    <label class="form-check-label" for="perm{{ perm.id }}">{{ perm.name }}</label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<table class="table">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for group, form in group_with_forms %}
+        <tr>
+            <td>{{ group.id }}</td>
+            <td>{{ group.name }}</td>
+            <td>
+                <!-- Edit Button -->
+
+                <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editGroup{{ group.id }}">
+                    Edit
+                </button>
+                <a href="{% url 'group_delete' group.id %}" class="btn btn-sm btn-danger btn-delete"
+                    data-name="{{ group.name }}">
+                    Delete</a>
+            </td>
+            <div class="modal fade" id="editGroup{{ group.id }}">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form method="post" action="{% url 'group_edit' group.id %}">
+                            {% csrf_token %}
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Group</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    {{ form.name.label_tag }}
+                                    {{ form.name }}
+                                </div>
+                                <h5>Permissions</h5>
+                                <div class="row">
+                                    {% for ct_key, perms in form.permissions_by_content_type.items %}
+                                    <div class="col-md-6 mb-3">
+                                        <strong>{{ perms.0.content_type.app_label }} | {{ perms.0.content_type.model }}</strong>
+                                        <div class="ms-2">
+                                            {% for perm in perms %}
+                                            <div class="form-check">
+                                                <input type="checkbox" name="permissions" value="{{ perm.id }}"
+                                                    class="form-check-input" id="editperm{{ perm.id }}_{{ group.id }}"
+                                                    {% if perm in form.instance.permissions.all %}checked{% endif %}>
+                                                <label class="form-check-label"
+                                                    for="editperm{{ perm.id }}_{{ group.id }}">{{ perm.name }}</label>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-success">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
